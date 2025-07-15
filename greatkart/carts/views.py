@@ -107,6 +107,8 @@ def remove_cart_item(request, product_id,cart_item_id):
         
 
 def cart(request,total=0, quantity=0, cart_items=None):
+    tax=0
+    grand_total=0
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))  # Get the cart using the session key
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)  # Get all active items in the cart
@@ -114,7 +116,7 @@ def cart(request,total=0, quantity=0, cart_items=None):
             total += (cart_item.product.price * cart_item.quantity)  # Calculate total price
             quantity += cart_item.quantity  # Calculate total quantity
         tax1=total * 0.05  # Calculate tax (5% of total)
-        tax= round(tax1, 2)  # Round tax to 2 decimal places
+        tax= round(total * 0.05, 2)  # Round tax to 2 decimal places
         grand_total = total + tax  # Calculate grand total
     except Cart.DoesNotExist:
         pass  # If no cart exists, we simply pass
